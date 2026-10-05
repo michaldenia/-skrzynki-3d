@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Knife Mystery Box – Kolekcjonerskie Repliki 3D</title>
+    <style>
+        body {
+            background-color: #0b0914;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 30px 20px;
+        }
+        h1 {
+            color: #a855f7;
+            margin-bottom: 5px;
+            text-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+        }
+        p.subtitle {
+            color: #9ca3af;
+            margin-bottom: 25px;
+        }
+        
+        .layout-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 25px;
+            max-width: 950px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .info-card {
+            background-color: #13111c;
+            border: 1px solid #2d2640;
+            border-radius: 16px;
+            width: 320px;
+            padding: 20px;
+            text-align: left;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+        .info-card h3 {
+            color: #a855f7;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-bottom: 1px solid #2d2640;
+            padding-bottom: 8px;
+        }
+        .info-item {
+            margin-bottom: 15px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #d1d5db;
+        }
+        .info-item strong {
+            color: #ffffff;
+            display: block;
+            margin-bottom: 3px;
+        }
+        .info-badge {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .crate-card {
+            background-color: #13111c;
+            border: 2px solid #a855f7;
+            border-radius: 16px;
+            width: 400px;
+            padding: 25px;
+            box-shadow: 0 8px 24px rgba(168, 85, 247, 0.25);
+            transition: all 0.3s ease;
+        }
+        .crate-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(168, 85, 247, 0.4);
+        }
+        .crate-img {
+            width: 100%;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 70px;
+            background: radial-gradient(circle, rgba(168,85,247,0.2) 0%, rgba(11,9,20,1) 70%);
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .drop-list {
+            max-height: 0;
+            opacity: 0;
+            overflow-y: auto;
+            transition: all 0.4s ease-in-out;
+            background: #0b0914;
+            border-radius: 8px;
+            padding: 0 10px;
+            margin-top: 15px;
+            text-align: left;
+            border: 1px solid transparent;
+            scrollbar-color: #2d2640 #0b0914;
+            scrollbar-width: thin;
+        }
+        .drop-list::-webkit-scrollbar { width: 6px; }
+        .drop-list::-webkit-scrollbar-track { background: #0b0914; }
+        .drop-list::-webkit-scrollbar-thumb { background: #2d2640; border-radius: 3px; }
+
+        .crate-card:hover .drop-list {
+            max-height: 250px;
+            opacity: 1;
+            padding: 12px;
+            border-color: #2d2640;
+        }
+        .drop-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 11px;
+            border-bottom: 1px solid #1f1a2e;
+            padding-bottom: 4px;
+        }
+        .drop-chance {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 11px;
+            flex-shrink: 0;
+            margin-left: 5px;
+        }
+
+        .btn {
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            width: 100%;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        .btn-buy { background-color: #7c3aed; color: white; }
+        .btn-buy:hover { background-color: #6d28d9; }
+        .btn-open { background-color: #a855f7; color: #0b0914; }
+        .btn-open:hover { background-color: #9333ea; color: #ffffff; }
+        .btn:disabled { background-color: #374151; cursor: not-allowed; opacity: 0.6; }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(8, 6, 15, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        .payment-modal, .success-modal {
+            background: #13111c;
+            border: 1px solid #2d2640;
+            border-radius: 16px;
+            width: 380px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .success-modal {
+            border: 2px solid #a855f7;
+            box-shadow: 0 0 35px rgba(168, 85, 247, 0.3);
+            display: none;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .payment-option {
+            background: #0b0914;
+            border: 2px solid #2d2640;
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
+        .payment-option:hover {
+            border-color: #a855f7;
+            background: #1b1330;
+        }
+        .payment-option.selected {
+            border-color: #a855f7;
+            background: rgba(168, 85, 247, 0.15);
+        }
+
+        .fullscreen-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(8, 6, 15, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .opening-box-container {
+            display: none;
+            position: relative;
+            font-size: 110px;
+            animation: dropAndBounce 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .opening-box-container.shake { animation: shakeCrate 0.5s ease-in-out 0.8s infinite; }
+        .opening-box-container.open-glow { animation: glowPulse 0.6s forwards; }
+
+        @keyframes dropAndBounce {
+            0% { transform: translateY(-250px) scale(0.3); opacity: 0; }
+            70% { transform: translateY(15px) scale(1.1); opacity: 1; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        @keyframes shakeCrate {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-8deg) scale(1.05); }
+            75% { transform: rotate(8deg) scale(1.05); }
+        }
+        @keyframes glowPulse {
+            0% { filter: drop-shadow(0 0 0px #a855f7); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 60px #a855f7) brightness(1.5); transform: scale(1.25); }
+            100% { filter: drop-shadow(0 0 80px #ffffff) brightness(2); transform: scale(1.4); opacity: 0; }
+        }
+
+        .roulette-wrapper {
+            position: relative;
+            width: 90%;
+            max-width: 960px;
+            height: 175px;
+            background: #13111c;
+            border: 3px solid #a855f7;
+            border-radius: 12px;
+            overflow: hidden;
+            display: none;
+            box-shadow: 0 0 40px rgba(168, 85, 247, 0.4);
+        }
+        .pointer {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: #f1c40f;
+            z-index: 10;
+            box-shadow: 0 0 15px #f1c40f;
+        }
+        .roulette-track { display: flex; position: absolute; left: 0; top: 12px; }
+        .roulette-card {
+            width: 140px; height: 145px; margin: 0 6px;
+            background: #0b0914; border-radius: 8px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: bold; box-sizing: border-box; border-bottom: 4px solid #fff;
+            flex-shrink: 0; padding: 6px; text-align: center;
+        }
+        .roulette-card img { width: 48px; height: 48px; margin-bottom: 6px; }
+
+        .win-modal {
+            display: none;
+            background: #13111c;
+            border-radius: 16px;
+            padding: 30px;
+            width: 380px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .delivery-notice {
+            color: #a855f7;
+            font-weight: bold;
+            font-size: 14px;
+            margin: 15px 0;
+            background: rgba(168, 85, 247, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px dashed #a855f7;
+        }
+
+        .inventory-section {
+            width: 100%;
+            background: #13111c;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 40px;
+            border: 1px solid #2d2640;
+        }
+        .inventory-grid {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            scrollbar-color: #2d2640 #0b0914;
+            scrollbar-width: thin;
+        }
+        .inventory-grid::-webkit-scrollbar { height: 8px; }
+        .inventory-grid::-webkit-scrollbar-track { background: #0b0914; border-radius: 4px; }
+        .inventory-grid::-webkit-scrollbar-thumb { background: #2d2640; border-radius: 4px; }
+        
+        .inventory-card {
+            background: #0b0914; border-radius: 8px; padding: 10px; min-width: 120px; border-bottom: 3px solid; font-size: 11px; text-align: center;
+        }
+        .inventory-card img { width: 40px; height: 40px; margin-bottom: 5px; }
+        
+        .crate-item-card {
+            position: relative; background: #1b1330; border: 1px solid #a855f7; border-bottom: 3px solid #a855f7; border-radius: 8px; padding: 10px; min-width: 120px; font-size: 12px; text-align: center;
+        }
+        .crate-hover-action { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.3s ease; margin-top: 0; }
+        .crate-item-card:hover .crate-hover-action { max-height: 40px; opacity: 1; margin-top: 8px; }
+        .btn-mini-open { background: #a855f7; color: #0b0914; border: none; padding: 6px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; width: 100%; cursor: pointer; }
+        .badge-count { background: #a855f7; color: #0b0914; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: bold; }
+
+        footer {
+            margin-top: 50px; font-size: 11px; color: #6b7280; max-width: 700px; margin-left: auto; margin-right: auto; line-height: 1.4; border-top: 1px solid #1f1a2e; padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Dream Knife Mystery Box – Kolekcjonerskie Repliki 3D</h1>
+    <p class="subtitle">Skrzynia Snów i Koszmarów: Otwieraj i zdobywaj unikalne, legalne repliki kolekcjonerskie!</p>
+
+    <div class="layout-container">
+        <!-- PASEK INFORMACYJNY -->
+        <div class="info-card">
+            <h3>ℹ️ Zawartość Skrzyni</h3>
+            <div class="info-badge">SERIA: SNÓW I KOSZMARÓW</div>
+            <div class="info-item"><strong>⚡ Szybka Realizacja</strong>Gwarantujemy ekspresową wysyłkę zamówionych replik w 24h!</div>
+            <div class="info-item"><strong>💎 Najwyższa Jakość 3D</strong>Każdy model drukowany jest z dbałością o każdy detal, ręcznie wykańczany i sprawdzany przed wysyłką.</div>
+            <div class="info-item"><strong>⚔️ Unikalne Wykończenia</strong>Wzory inspirowane klasycznymi motywami takimi jak Szmaragd, Starożytne Kroniki oraz Czerwona Siatka Technologiczna.</div>
+        </div>
+
+        <!-- KARTA BOXA -->
+        <div class="crate-card">
+            <div class="crate-img">🎁</div>
+            <h2>Dream Knife Mystery Box</h2>
+            <p style="color: #9ca3af; font-size: 14px;">Cena: <b>49,99 PLN</b></p>
+            <p style="color: #c084fc; font-size: 14px; font-weight: bold;">
+                Posiadasz: <span id="crateCount" class="badge-count">{{ crates_count }}</span> szt.
+            </p>
+
+            <div class="drop-list">
+                <div style="font-weight: bold; margin-bottom: 8px; color: #c084fc; font-size: 11px;">PEŁNA LISTA NAGRÓD (SKRZYNIA SNÓW I KOSZMARÓW):</div>
+                <div class="drop-item"><span>🦋 Nóż Motylkowy | Gamma Szmaragd</span><span class="drop-chance" style="color: #2ecc71;">5%</span></div>
+                <div class="drop-item"><span>🦋 Nóż Motylkowy | Gamma Faza</span><span class="drop-chance">5%</span></div>
+                <div class="drop-item"><span>🦋 Nóż Motylkowy | Starożytne Kroniki</span><span class="drop-chance">5%</span></div>
+                <div class="drop-item"><span>🦋 Nóż Motylkowy | Czerwona Siatka Technologiczna</span><span class="drop-chance">5%</span></div>
+                <div class="drop-item"><span>⚔️ Nóż Taktyczny | Gamma Faza</span><span class="drop-chance">7%</span></div>
+                <div class="drop-item"><span>⚔️ Nóż Taktyczny | Starożytne Kroniki</span><span class="drop-chance">7%</span></div>
+                <div class="drop-item"><span>⚔️ Nóż Taktyczny | Czerwona Siatka Technologiczna</span><span class="drop-chance">6%</span></div>
+                <div class="drop-item"><span>🪓 Nóż Traper | Gamma Faza</span><span class="drop-chance">7%</span></div>
+                <div class="drop-item"><span>🪓 Nóż Traper | Starożytne Kroniki</span><span class="drop-chance">7%</span></div>
+                <div class="drop-item"><span>🪓 Nóż Traper | Czerwona Siatka Technologiczna</span><span class="drop-chance">6%</span></div>
+                <div class="drop-item"><span>🗡️ Nóż Krótki | Gamma Faza</span><span class="drop-chance">7%</span></div>
+                <div class="drop-item"><span>🗡️ Nóż Krótki | Starożytne Kroniki</span><span class="drop-chance">7%</span></div>
+                <div class="drop-item"><span>🗡️ Nóż Krótki | Czerwona Siatka Technologiczna</span><span class="drop-chance">6%</span></div>
+                <div class="drop-item"><span>🛡️ Nóż Bojowy | Gamma Faza</span><span class="drop-chance">7%</span></div>
+                <div class="drop-item"><span>🛡️ Nóż Bojowy | Starożytne Kroniki</span><span class="drop-chance">6%</span></div>
+                <div class="drop-item"><span>🛡️ Nóż Bojowy | Czerwona Siatka Technologiczna</span><span class="drop-chance">5%</span></div>
+            </div>
+
+            <button class="btn btn-buy" onclick="openPaymentModal()">🛒 Kup Mystery Box</button>
+            <button class="btn btn-open" id="openBtn" onclick="startOpeningSequence()" {% if crates_count <= 0 %}disabled{% endif %}>
+                🔓 Otwórz Mystery Box
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL WYBORU PŁATNOŚCI -->
+    <div class="modal-overlay" id="paymentOverlay">
+        <div class="payment-modal" id="paymentModalBox">
+            <h3 style="color: #a855f7; margin-top: 0;">Wybierz metodę płatności</h3>
+            <p style="color: #9ca3af; font-size: 13px;">Dream Knife Mystery Box (<b>49,99 PLN</b>)</p>
+            
+            <div class="payment-methods">
+                <div class="payment-option" onclick="selectPayment('BLIK', this)">
+                    <span>📱 BLIK</span> <span style="font-size: 12px; color: #9ca3af;">Natychmiastowy</span>
+                </div>
+                <div class="payment-option" onclick="selectPayment('VISA', this)">
+                    <span>💳 Karta VISA</span> <span style="font-size: 12px; color: #9ca3af;">Karta płatnicza</span>
+                </div>
+                <div class="payment-option" onclick="selectPayment('Mastercard', this)">
+                    <span>💳 Mastercard</span> <span style="font-size: 12px; color: #9ca3af;">Karta płatnicza</span>
+                </div>
+                <div class="payment-option" onclick="selectPayment('Przelewy24', this)">
+                    <span>🏦 Przelewy24</span> <span style="font-size: 12px; color: #9ca3af;">Szybki przelew</span>
+                </div>
+            </div>
+
+            <button class="btn btn-buy" id="payNowBtn" onclick="processPayment()" disabled style="opacity: 0.5;">Zapłać 49,99 PLN</button>
+            <button class="btn" onclick="closePaymentModal()" style="background: #2d2640; color: #fff; margin-top: 8px;">Anuluj</button>
+        </div>
+
+        <!-- OKIENKO SUKCESU -->
+        <div class="success-modal" id="successModalBox">
+            <div style="font-size: 50px; margin-bottom: 10px;">✅</div>
+            <h2 style="color: #a855f7; margin-top: 0; font-size: 20px;">Zakup zakończony sukcesem!</h2>
+            <p style="color: #d1d5db; font-size: 14px; line-height: 1.5; margin-bottom: 20px;">
+                Twój Dream Mystery Box znajduje się w ekwipunku.
+            </p>
+            <button class="btn btn-open" onclick="finishPurchaseSuccess()">Odbierz i zamknij</button>
+        </div>
+    </div>
+
+    <!-- PEŁNOEKRANOWY OVERLAY DO OTWIERANIA -->
+    <div class="fullscreen-overlay" id="fullscreenOverlay">
+        <div class="opening-box-container" id="openingCrate">🎁</div>
+        <div class="roulette-wrapper" id="rouletteWrapper">
+            <div class="pointer"></div>
+            <div class="roulette-track" id="rouletteTrack"></div>
+        </div>
+        <div class="win-modal" id="winModal">
+            <h3 style="color: #9ca3af; margin: 0; font-size: 14px;">TWÓJ WYGRANY MODEL:</h3>
+            <img id="winImg" src="" style="width: 100px; height: 100px; margin: 15px 0;">
+            <h2 id="winName" style="margin: 5px 0; font-size: 18px;"></h2>
+            <p id="winRarity" style="color: #2ecc71; font-size: 13px; margin-bottom: 10px; font-weight: bold;"></p>
+            <div class="delivery-notice">📦 Wysyłka w 24h! Twoja replika w najwyższej jakości już do Ciebie leci!</div>
+            <button class="btn btn-open" onclick="closeOverlay()">Zamknij</button>
+        </div>
+    </div>
+
+    <!-- EKWIPUNEK -->
+    <div class="inventory-section" style="max-width: 970px; margin: 40px auto 0 auto;">
+        <h3 style="margin-top: 0; color: #a855f7; text-align: left;">Twój Ekwipunek (Mystery Boxy & Repliki)</h3>
+        <div class="inventory-grid" id="inventoryGrid">
+            <div class="crate-item-card" id="crateInInventory" style="display: {% if crates_count > 0 %}block{% else %}none{% endif %};">
+                <div style="font-size: 32px;">🎁</div>
+                <div style="color: #c084fc; font-weight: bold; margin: 4px 0;">Dream Mystery Box</div>
+                <div style="color: #9ca3af; font-size: 11px;">Ilość: <span id="invCrateCount">{{ crates_count }}</span></div>
+                <div class="crate-hover-action">
+                    <button class="btn-mini-open" onclick="startOpeningSequence()">🔓 Otwórz</button>
+                </div>
+            </div>
+            {% for item in inventory %}
+            <div class="inventory-card" style="border-color: {{ item.color }}">
+                <img src="{{ item.img }}">
+                <div style="color: {{ item.color }}; font-weight: bold;">{{ item.name }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- STOPKA PRAWNA -->
+    <footer>
+        <b>Informacja prawna i oświadczenie o prawach autorskich:</b> Wszystkie sprzedawane fizyczne repliki to niezależne, fanowskie przedmioty kolekcjonerskie (custom 3D props / fan art) inspirowane popularnymi motywami i uniwersalnymi stylami wizualnymi (w tym Gamma, Starożytne Kroniki oraz Czerwona Siatka Technologiczna) obecnymi w grach taktycznych FPS. Niniejszy sklep jest niezależnym projektem hobbystycznym i nie jest powiązany, sponsorowany, autoryzowany ani w żaden sposób oficjalnie wspierany przez Valve Corporation. Wszelkie prawa do oryginalnych marek i znaków towarowych należą do ich prawnych właścicieli.
+    </footer>
+
+    <script>
+        let selectedMethod = null;
+
+        function openPaymentModal() {
+            document.getElementById('paymentOverlay').style.display = 'flex';
+            document.getElementById('paymentModalBox').style.display = 'block';
+            document.getElementById('successModalBox').style.display = 'none';
+            selectedMethod = null;
+            document.getElementById('payNowBtn').disabled = true;
+            document.getElementById('payNowBtn').style.opacity = '0.5';
+            
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentOverlay').style.display = 'none';
+        }
+
+        function selectPayment(method, element) {
+            selectedMethod = method;
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            const payBtn = document.getElementById('payNowBtn');
+            payBtn.disabled = false;
+            payBtn.style.opacity = '1';
+            payBtn.innerText = `Zapłać 49,99 PLN (${method})`;
+        }
+
+        async function processPayment() {
+            if (!selectedMethod) return;
+
+            const response = await fetch('/buy_crate', { method: 'POST' });
+            const data = await response.json();
+
+            document.getElementById('crateCount').innerText = data.crates_count;
+            document.getElementById('invCrateCount').innerText = data.crates_count;
+            document.getElementById('crateInInventory').style.display = 'block';
+            document.getElementById('openBtn').disabled = false;
+
+            document.getElementById('paymentModalBox').style.display = 'none';
+            document.getElementById('successModalBox').style.display = 'block';
+        }
+
+        function finishPurchaseSuccess() {
+            closePaymentModal();
+        }
+
+        // Pula nagród w ruletce (w 100% czysto polskie nazwy)
+        const itemsPool = [
+            { name: '🦋 Nóż Motylkowy | Gamma Szmaragd', color: '#2ecc71', img: 'https://img.icons8.com/color/96/pocket-knife.png', chance: 0.05 },
+            { name: '🦋 Nóż Motylkowy | Gamma Faza', color: '#1abc9c', img: 'https://img.icons8.com/color/96/pocket-knife.png', chance: 0.05 },
+            { name: '🦋 Nóż Motylkowy | Starożytne Kroniki', color: '#f1c40f', img: 'https://img.icons8.com/color/96/pocket-knife.png', chance: 0.05 },
+            { name: '🦋 Nóż Motylkowy | Czerwona Siatka Technologiczna', color: '#e74c3c', img: 'https://img.icons8.com/color/96/pocket-knife.png', chance: 0.05 },
+
+            { name: '⚔️ Nóż Taktyczny | Gamma Faza', color: '#1abc9c', img: 'https://img.icons8.com/color/96/pocket-knife.png', chance: 0.07 },
+            { name: '⚔️ Nóż Taktyczny | Starożytne Kroniki', color: '#f1c40f', img: 'https://img.icons8.com/color/96/pocket-knife.png', chance: 0.07 },
+            { name: '⚔️ Nóż Taktyczny | Czerwona Siatka Technologiczna', color: '#e74c3c', img: 'https://img.icons8.com/color/96/pocket-knife.png', chance: 0.06 },
+
+            { name: '🪓 Nóż Traper | Gamma Faza', color: '#1abc9c', img: 'https://img.icons8.com/color/96/pocket-knife.png', chance: 0.07 },
+            { name: '🪓 Nóż Traper | Starożytne Kroniki', color: '#f1c40f', img: 'https://img.icons8.com/color/96/pocket-knife.png', chance: 0.07 },
+            { name: '🪓 Nóż Traper | Czerwona Siatka Technologiczna', color: '#e74c3c', img: 'https://img.icons8.com/color/96/pocket-knife.png', chance: 0.06 },
+
+            { name: '🗡️ Nóż Krótki | Gamma Faza', color: '#1abc9c', img: 'https://img.icons8.com/color/96/pocket-knife.png', chance: 0.07 },
+            { name: '🗡️ Nóż Krótki | Starożytne Kroniki', color: '#f1c40f', img: 'https://img.icons8.com/color/96/pocket-knife.png', chance: 0.07 },
+            { name: '🗡️️ Nóż Krótki | Czerwona Siatka Technologiczna', color: '#e74c3c', img: 'https://img.icons8.com/color/96/pocket-knife.png', chance: 0.06 },
+
+            { name: '🛡️ Nóż Bojowy | Gamma Faza', color: '#1abc9c', img: 'https://img.icons8.com/color/96/pocket-knife.png', chance: 0.07 },
+            { name: '🛡️ Nóż Bojowy | Starożytne Kroniki', color: '#f1c40f', img: 'https://img.icons8.com/color/96/pocket-knife.png', chance: 0.06 },
+            { name: '🛡️ Nóż Bojowy | Czerwona Siatka Technologiczna', color: '#e74c3c', img: 'https://img.icons8.com/color/96/pocket-knife.png', chance: 0.05 }
+        ];
+
+        function getRandomWeightedItem() {
+            let rand = Math.random();
+            let cumulative = 0;
+            for (let item of itemsPool) {
+                cumulative += item.chance;
+                if (rand <= cumulative) return item;
+            }
+            return itemsPool[0];
+        }
+
+        const tickSound = new Audio('/static/sounds/tick.mp3');
+        const winSound = new Audio('/static/sounds/win.mp3');
+
+        async function startOpeningSequence() {
+            const btn = document.getElementById('openBtn');
+            const overlay = document.getElementById('fullscreenOverlay');
+            const openingCrate = document.getElementById('openingCrate');
+            const wrapper = document.getElementById('rouletteWrapper');
+            const winModal = document.getElementById('winModal');
+
+            btn.disabled = true;
+            winModal.style.display = 'none';
+            wrapper.style.display = 'none';
+
+            const response = await fetch('/open_spin', { method: 'POST' });
+            if (!response.ok) {
+                alert("Nie masz Mystery Boxów!");
+                btn.disabled = false;
+                return;
+            }
+            const data = await response.json();
+
+            document.getElementById('crateCount').innerText = data.remaining_crates;
+            document.getElementById('invCrateCount').innerText = data.remaining_crates;
+            if (data.remaining_crates <= 0) {
+                document.getElementById('crateInInventory').style.display = 'none';
+            }
+
+            overlay.style.display = 'flex';
+            openingCrate.className = 'opening-box-container shake';
+            openingCrate.style.display = 'block';
+
+            setTimeout(() => {
+                openingCrate.className = 'opening-box-container open-glow';
+            }, 1400);
+
+            setTimeout(() => {
+                openingCrate.style.display = 'none';
+                wrapper.style.display = 'block';
+                runRouletteSpin(data.knife);
+            }, 1900);
+        }
+
+        function runRouletteSpin(winningItem) {
+            const track = document.getElementById('rouletteTrack');
+            const winModal = document.getElementById('winModal');
+            const wrapper = document.getElementById('rouletteWrapper');
+
+            track.style.transition = 'none';
+            track.style.transform = 'translateX(0px)';
+            track.innerHTML = '';
+
+            let cardsHTML = '';
+            for (let i = 0; i < 50; i++) {
+                const item = getRandomWeightedItem();
+                cardsHTML += `<div class="roulette-card" style="border-color: ${item.color}; color: ${item.color}"><img src="${item.img}">${item.name}</div>`;
+            }
+            cardsHTML += `<div class="roulette-card" style="border-color: ${winningItem.color}; color: ${winningItem.color}"><img src="${winningItem.img}">${winningItem.name}</div>`;
+            for (let i = 0; i < 10; i++) {
+                const item = getRandomWeightedItem();
+                cardsHTML += `<div class="roulette-card" style="border-color: ${item.color}; color: ${item.color}"><img src="${item.img}">${item.name}</div>`;
+            }
+
+            track.innerHTML = cardsHTML;
+
+            let soundInterval = setInterval(() => {
+                tickSound.currentTime = 0;
+                tickSound.play().catch(() => {});
+            }, 120);
+
+            setTimeout(() => {
+                track.style.transition = 'transform 5s cubic-bezier(0.1, 0.8, 0.1, 1)';
+                const cardWidth = 152; 
+                const wrapperWidth = wrapper.offsetWidth;
+                const landingPosition = -(50 * cardWidth) + (wrapperWidth / 2 - cardWidth / 2);
+                track.style.transform = `translateX(${landingPosition}px)`;
+            }, 50);
+
+            setTimeout(() => {
+                clearInterval(soundInterval);
+                winSound.play().catch(() => {});
+
+                document.getElementById('winImg').src = winningItem.img;
+                document.getElementById('winName').innerText = winningItem.name;
+                document.getElementById('winName').style.color = winningItem.color;
+                document.getElementById('winRarity').innerText = winningItem.name.includes('Szmaragd') ? 'Rzadkość: Ekskluzywny Szmaragd (5%)' : 'Rzadkość: Wyróżniony Kolekcjonerski Wzór';
+                
+                winModal.style.border = `2px solid ${winningItem.color}`;
+                winModal.style.boxShadow = `0 0 35px ${winningItem.color}66`;
+                winModal.style.display = 'block';
+
+                const crateCard = document.getElementById('crateInInventory');
+                const newCardHTML = `<div class="inventory-card" style="border-color: ${winningItem.color}"><img src="${winningItem.img}"><div style="color: ${winningItem.color}; font-weight: bold;">${winningItem.name}</div></div>`;
+                crateCard.insertAdjacentHTML('afterend', newCardHTML);
+            }, 5200);
+        }
+
+        function closeOverlay() {
+            document.getElementById('fullscreenOverlay').style.display = 'none';
+            const crateCount = parseInt(document.getElementById('crateCount').innerText);
+            if (crateCount > 0) {
+                document.getElementById('openBtn').disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
